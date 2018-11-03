@@ -84,7 +84,7 @@ h1 {
     background-color: #fff;
 }
 
-#calendar .days div.week div {
+#calendar .days div {
     text-align: center;
     width: calc(100% / 7);
     height: 100px;
@@ -93,12 +93,13 @@ h1 {
     display: inline-block;
 }
 
-#calendar .days div.week {
+#calendar .days {
     width: 100%;
     display: flex;
 }
 
-#calendar .days div.week div:hover {
+#calendar .days div:hover,
+#calendar .days div.today {
     background-color: #f2b632;
     color: #fff;
     cursor: pointer;
