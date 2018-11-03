@@ -48,7 +48,8 @@ function getMonth() {
 console.log(new calendar());
 var calendar = new calendar();
 renderDays(document.getElementById('calendar'), calendar);
-renderToday(document.getElementById('calendar'), calendar);
+renderTodayActiveDay(document.getElementById('calendar'), calendar);
+renderTodayMonth(document.getElementById('calendar'), calendar);
 
 function renderDays(calendarHTMLElm, calendarObj) {
     for (let i = 1; i <= calendarObj.days.length; i++) {
@@ -60,7 +61,7 @@ function renderDays(calendarHTMLElm, calendarObj) {
     }
 }
 
-function renderToday(calendarHTMLElm, calendarObj) {
+function renderTodayActiveDay(calendarHTMLElm, calendarObj) {
     var daysNode = calendarHTMLElm.querySelectorAll('div.day');
     for (var i = 0; i < daysNode.length; i++) {
         if (daysNode[i].dataset.day == calendarObj.today) {
@@ -69,4 +70,9 @@ function renderToday(calendarHTMLElm, calendarObj) {
             daysNode[i].classList.remove('today');
         }
     }
+
+}
+
+function renderTodayMonth(calendarHTMLElm, calendarObj) {
+    var monthNode = calendarHTMLElm.querySelector('.month').innerHTML = calendarObj.year + '<br>' + calendarObj.month;
 }
