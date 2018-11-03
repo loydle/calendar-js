@@ -108,7 +108,7 @@ h1 {
 }
 
 #calendar .days div:hover {
-    background-color: #eee;
+    background-color: rgba(238, 238, 238, 0.479);
     color: #222;
     cursor: pointer;
 }

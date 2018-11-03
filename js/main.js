@@ -1,11 +1,12 @@
 function calendar() {
 
     // default value;
-    this.today = new Date().getDate();
+    var date = new Date();
+    this.today = date.getDate();
     this.year = getYear();
     this.month = getMonth();
     this.days = getDays(getDaysOfMonth(this.month));
-
+    this.dayOfWeek = getDayOfWeek(date);
 
     return this;
 }
@@ -33,6 +34,11 @@ function getDays(numDays) {
     };
     return days;
 };
+
+function getDayOfWeek(dateObj) {
+    var daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    return daysOfWeek[dateObj.getDay()];
+}
 
 function getYear() {
     var today = new Date();
