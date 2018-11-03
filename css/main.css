@@ -100,10 +100,16 @@ h1 {
     display: flex;
 }
 
-#calendar .days div:hover,
-#calendar .days div.today {
+#calendar .days div.today,
+#calendar .days div.today:hover {
     background-color: #f2b632;
     color: #fff;
+    cursor: pointer;
+}
+
+#calendar .days div:hover {
+    background-color: #eee;
+    color: #222;
     cursor: pointer;
 }
 
