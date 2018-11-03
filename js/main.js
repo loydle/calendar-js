@@ -46,19 +46,27 @@ function getMonth() {
 }
 
 console.log(new calendar());
-
-renderToday(document.getElementById('calendar'));
-renderDays(document.getElementById('calendar'), new calendar());
+var calendar = new calendar();
+renderDays(document.getElementById('calendar'), calendar);
+renderToday(document.getElementById('calendar'), calendar);
 
 function renderDays(calendarHTMLElm, calendarObj) {
     for (let i = 1; i <= calendarObj.days.length; i++) {
         let div = document.createElement('div');
-        div.innerText = i;
-        div.classList.add('day')
+        div.dataset.day = i;
+        div.innerText = div.dataset.day;
+        div.classList.add('day');
         calendarHTMLElm.querySelector('section.days').appendChild(div);
     }
 }
 
-function renderToday(calendarHTMLElm) {
-    // var daysNode = querySelectorAll('')
+function renderToday(calendarHTMLElm, calendarObj) {
+    var daysNode = calendarHTMLElm.querySelectorAll('div.day');
+    for (var i = 0; i < daysNode.length; i++) {
+        if (daysNode[i].dataset.day == calendarObj.today) {
+            daysNode[i].classList.add('today');
+        } else {
+            daysNode[i].classList.remove('today');
+        }
+    }
 }
