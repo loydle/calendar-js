@@ -7,6 +7,10 @@ renderCalendar(
 );
 
 
+//---------------------------------------------------------
+//---------------------------------------------------------
+
+
 function renderCalendar(calendarNode, CalendarObj) {
 
     renderDays(calendarNode, CalendarObj);
@@ -15,28 +19,38 @@ function renderCalendar(calendarNode, CalendarObj) {
 
     function renderDays(calendarHTMLElm, Calendar) {
         for (let i = 1; i <= Calendar.days.length; i++) {
-            let div = document.createElement('div');
-            div.dataset.day = i;
-            div.innerText = div.dataset.day;
-            div.classList.add('day');
-            calendarHTMLElm.querySelector('section.days').appendChild(div);
+            let parentDivDay = new templateNode('.day-view', i, i);
+            parentDivDay.addEventListener('click', function renderDivOptions(e) {
+                if (parentDivDay.querySelector('.day-view-option')) {
+                    parentDivDay.querySelector('.day-view-option').remove()
+                } else {
+                    var template = new templateNode('.day-view-option');
+                    parentDivDay.appendChild(template);
+                }
+
+            });
+            calendarHTMLElm.querySelector('section.days')
+                .appendChild(parentDivDay);
         }
     }
 
     function renderTodayActiveDay(calendarHTMLElm, Calendar) {
-        var daysNode = calendarHTMLElm.querySelectorAll('div.day');
+        var daysNode = calendarHTMLElm.querySelectorAll('div.day-view');
         for (var i = 0; i < daysNode.length; i++) {
             if (daysNode[i].dataset.day == Calendar.today) {
-                daysNode[i].classList.add('today');
+                daysNode[i].classList
+                    .add('today');
             } else {
-                daysNode[i].classList.remove('today');
+                daysNode[i].classList
+                    .remove('today');
             }
         }
 
     }
 
     function renderTodayMonth(calendarHTMLElm, Calendar) {
-        var monthNode = calendarHTMLElm.querySelector('.month').innerHTML = Calendar.year + '<br>' + Calendar.month;
+        var monthNode = calendarHTMLElm.querySelector('.month')
+            .innerHTML = Calendar.year + '<br>' + Calendar.month;
     }
 }
 
@@ -109,4 +123,19 @@ function getMonth() {
     var today = new Date();
     var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
     return months[today.getMonth()];
+}
+
+function templateNode(classOrId, contentHTML, dataset) {
+    if (document.querySelector('template').content) {
+        var div = document.querySelector('template').content.querySelector(classOrId).cloneNode(true);
+        if (contentHTML) {
+            div.innerHTML = contentHTML;
+        }
+        div.dataset.day = dataset;
+        return div;
+    } else {
+        var div = document.createElement('div');
+        div.innerText = "error";
+        return div;
+    }
 }
