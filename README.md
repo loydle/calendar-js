@@ -1,7 +1,7 @@
 # Calendar JS - WIP
 A simple HTML5 / JS calendar
 
-![screenshot](https://i.imgur.com/1A9334Q.png)
+![screenshot](https://preview.ibb.co/byomA0/Capture-d-cran-2018-11-04-13-12-45.png)
 
 # MIT License
 
