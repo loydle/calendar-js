@@ -87,11 +87,10 @@ function renderCalendar(calendarNode, CalendarObj) {
                 }
             }
 
-            var pastMonth = getPastMonth(CalendarObj.date);
-            var lastDay = getDaysOfMonth(pastMonth);
+
             var year = CalendarObj.date.getFullYear();
             for (let i = 0; i < emptyCells; i++) {
-                var date = new Date(`${pastMonth} ${lastDay - i}, ${year}`);
+                var date = new Date(`${getPastMonth(CalendarObj.date)} ${getDaysOfMonth(CalendarObj.date) - i}, ${year}`);
                 try {
                     var elm = calendarHTMLElm.querySelector('.week-' + date.getDay() + ' .day')
                     elm.innerHTML = date.getDate()
@@ -161,25 +160,15 @@ function Calendar(Day) {
     this.today = new Date().getDate();
     this.year = getYear(Day.date);
     this.month = getMonth(Day.date);
-    this.days = getDays(getDaysOfMonth(this.month));
+    this.year = Day.date.getFullYear();
+    this.days = getDays(getDaysOfMonth(Day.date));
+    console.log(getDaysOfMonth(Day.date))
     this.dayOfWeek = getDayOfWeek(Day.date);
     return this;
 }
 
-function getDaysOfMonth(month) {
-    var month = month || [];
-    if (month === 'February') {
-        return (function getDaysOfFebruary() {
-            return 28
-        }())
-    } else if (
-        ['January', 'March', 'May', 'July', 'August', 'October', 'December']
-        .filter(m => m === month)[0]
-    ) {
-        return 31;
-    } else {
-        return 30;
-    }
+function getDaysOfMonth(date) {
+    return new Date(date.getFullYear(), date.getMonth(), 0).getDate();
 };
 
 function getDays(numDays) {
