@@ -1,86 +1,119 @@
-var Calendar =
-    new Calendar(new Day(new Date()));
-
+const CalendarInit = new Calendar(new Day(new Date()));
 renderCalendar(
     document.getElementById('calendar'),
-    Calendar
+    CalendarInit
 );
 
-
-//---------------------------------------------------------
-//---------------------------------------------------------
-
+//----------------------------------------------------------
+//----------------------------------------------------------
 
 function renderCalendar(calendarNode, CalendarObj) {
+    console.log(CalendarObj);
 
+    (function clearWeekViews() {
+        var weeks = document.querySelectorAll('.week');
+        for (var i = 0; i < weeks.length; i++) {
+            weeks[i].innerHTML = ""
+        }
+    }())
+
+    var next = calendarNode.querySelector('.next');
+    var prev = calendarNode.querySelector('.prev');
+    next.onclick = nextView;
+    prev.onclick = prevView;
+
+    function nextView(e) {
+
+        var lastMonthDate = CalendarObj.date;
+        lastMonthDate.setDate(1);
+        lastMonthDate.setMonth(lastMonthDate.getMonth() + 1);
+        CalendarObj = new Calendar(new Day(lastMonthDate))
+        renderCalendar(document.getElementById('calendar'), CalendarObj)
+
+    }
+
+    function prevView(e) {
+        var lastMonthDate = CalendarObj.date;
+        lastMonthDate.setDate(1);
+        lastMonthDate.setMonth(lastMonthDate.getMonth() - 1);
+        CalendarObj = new Calendar(new Day(lastMonthDate))
+        renderCalendar(document.getElementById('calendar'), CalendarObj);
+    }
     renderDays(calendarNode, CalendarObj);
     renderTodayActiveDay(calendarNode, CalendarObj);
     renderTodayMonth(calendarNode, CalendarObj);
 
-    function renderDays(calendarHTMLElm, Calendar) {
+    function renderDays(calendarHTMLElm, CalendarObj) {
+        for (let i = 1; i <= CalendarObj.days.length; i++) {
+            var date = new Date(`${CalendarObj.month} ${i}, ${CalendarObj.year}`);
+            var currentWeek = date.getDay();
+            var template = document.querySelector('template').content;
+            var dayView = template.querySelector('.day-view').cloneNode(true)
+            var dayContainer = template.querySelector('.day').cloneNode(true)
+            dayContainer.appendChild(dayView);
+            dayContainer.dataset.day = date.getDate();
+            dayView.innerHTML = date.getDate();
+            calendarHTMLElm.querySelector('.days .current-month .week-' + currentWeek).appendChild(dayContainer);
 
-        for (let i = 1; i <= Calendar.days.length; i++) {
-            var date = new Date(`${Calendar.month} ${i}, ${Calendar.year}`);
-            var parentDivContent = `${date.getDate()}`;
-            if (Calendar.today === i) {
-                parentDivContent = `${Calendar.today} ${Calendar.month}<br>${Calendar.year}`
-            }
-            let dayTemplateDiv = new templateNode('.day', '', i);
-            let dayViewTemplateDiv = new templateNode('.day-view', parentDivContent);
-
-            dayTemplateDiv.onmouseover = renderDivOption;
-            dayTemplateDiv.onmouseout = removeDivOption;
-
-
-            var sectionWeek = '.week-' + date.getDay();
-            var sectionPastWeek = '.past-week-' + date.getDay();
-            dayTemplateDiv.appendChild(dayViewTemplateDiv)
-            if (date.getDate() >= Calendar.today) {
-                calendarHTMLElm.querySelector('section.days ' + sectionWeek)
-                    .appendChild(dayTemplateDiv);
-            } else {
-                calendarHTMLElm.querySelector('section.days  .past-week ' + sectionPastWeek)
-                    .appendChild(dayTemplateDiv);
-            }
-        }
-        var emptyDays = calendarHTMLElm.querySelectorAll('.past-week .week')
-        if (emptyDays.length) {
-            var pastMonth = getPastMonth(Calendar.date);
-            var lastDay = getDaysOfMonth(pastMonth);
-            var date = new Date();
-            var emptyCells = 0;
-            for (let i = 0; i < emptyDays.length; i++) {
-                if (emptyDays[i] instanceof HTMLElement) {
-                    if (emptyDays[i].innerHTML === "") {
-                        emptyCells += 1;
+            if (i == 1) {
+                if (date.getDay() != 0) {
+                    for (let i = 0; i < date.getDay(); i++) {
+                        var dayView = template.querySelector('.day-view').cloneNode(true)
+                        var dayContainer = template.querySelector('.day').cloneNode(true)
+                        dayContainer.appendChild(dayView);
+                        calendarHTMLElm.querySelector('.days .current-month .week-' + i).appendChild(dayContainer);
                     }
                 }
             }
+        }
+        var emptyDays = calendarHTMLElm.querySelectorAll('.current-month .week')
+        if (emptyDays.length) {
+
+            var emptyCells = 0;
+
+
+            for (let i = 0; i < emptyDays.length; i++) {
+                if (emptyDays[i] instanceof HTMLElement) {
+                    if (emptyDays[i].querySelector('.day-view') instanceof HTMLElement) {
+
+                        if (emptyDays[i].querySelector('.day-view').innerHTML === "") {
+                            emptyCells += 1;
+                        }
+                    }
+                }
+            }
+
+            var pastMonth = getPastMonth(CalendarObj.date);
+            var lastDay = getDaysOfMonth(pastMonth);
+            var year = CalendarObj.date.getFullYear();
+
             for (let i = 0; i < emptyCells; i++) {
-                date = new Date(`${pastMonth} ${lastDay - i}, ${Calendar.year}`);
+                var date = new Date(`${pastMonth} ${lastDay - i}, ${year}`);
+                try {
 
-                let dayTemplateDiv = new templateNode('.day', '');
-
-                let dayViewTemplateDiv = new templateNode('.day-view', date.getDate() + '');
-                dayTemplateDiv.classList.add('past');
-                dayTemplateDiv.appendChild(dayViewTemplateDiv);
-                emptyDays[date.getDay()].appendChild(dayTemplateDiv);
+                    var elm = calendarHTMLElm.querySelector('.week-' + date.getDay() + ' .day')
+                    elm.innerHTML = date.getDate()
+                    elm.classList.add('past')
+                } catch (err) {
+                    console.error(err)
+                }
             }
         }
     }
 
     function renderTodayActiveDay(calendarHTMLElm, Calendar) {
-        var daysNode = calendarHTMLElm.querySelectorAll('section.week .day');
-        for (var i = 0; i < daysNode.length; i++) {
-            if (daysNode[i].dataset.day == Calendar.today) {
-                daysNode[i].classList.add('today');
+        if (Calendar.month === getMonth(new Date()) && Calendar.year === new Date().getFullYear()) {
+            var daysNode = calendarHTMLElm.querySelectorAll('section.week .day');
+            for (var i = 0; i < daysNode.length; i++) {
+                if (daysNode[i].dataset.day == Calendar.today) {
+                    daysNode[i].classList.add('today');
 
-            } else {
-                daysNode[i].classList
-                    .remove('today');
+                } else {
+                    daysNode[i].classList
+                        .remove('today');
+                }
             }
         }
-
     }
 
     function renderTodayMonth(calendarHTMLElm, Calendar) {
@@ -96,37 +129,31 @@ function Day(dayAsDateObj) {
     function getTasks(dayAsDateObj) {
         return [new Task("11:00", "Meeting")]
     }
-    console.log(this);
 }
 
 function Task(time, name) {
     this.time = time || "00:00";
     this.name = name || " ";
-    console.log(this);
     return this;
 }
 
 
 function Calendar(Day) {
-    // default value;
-    var date = Day.date;
-    this.date = date;
-    this.today = date.getDate();
-    this.year = getYear();
-    this.month = getMonth();
+    this.date = Day.date;
+    this.today = new Date().getDate();
+    this.year = getYear(Day.date);
+    this.month = getMonth(Day.date);
     this.days = getDays(getDaysOfMonth(this.month));
-    this.dayOfWeek = getDayOfWeek(date);
-    console.log(this);
+    this.dayOfWeek = getDayOfWeek(Day.date);
     return this;
 }
 
 function getDaysOfMonth(month) {
-    console.log(month)
     var month = month || [];
     if (month === 'February') {
-        return function getDaysOfFebruary() {
-            //
-        }
+        return (function getDaysOfFebruary() {
+            return 28
+        }())
     } else if (
         ['January', 'March', 'May', 'July', 'August', 'October', 'December']
         .filter(m => m === month)[0]
@@ -150,9 +177,8 @@ function getDayOfWeek(dateObj) {
     return daysOfWeek[dateObj.getDay()];
 }
 
-function getYear() {
-    var today = new Date();
-    return today.getFullYear();
+function getYear(dateObj) {
+    return dateObj.getFullYear();
 }
 
 function getMonth(date) {
@@ -186,7 +212,7 @@ function renderDivOption(e) {
     let divDayOptions = new templateNode('.day-view-option');
     let divDayView = e.srcElement.querySelector('.day-view');
     if (divDayView instanceof HTMLElement) {
-        // divDayView.style.display = "none";
+
     }
     e.srcElement.appendChild(divDayOptions);
 }
@@ -204,12 +230,19 @@ function removeDivOption(e) {
 }
 
 function getPastMonth(refDate) {
-
-    var monthNum = refDate.getMonth() - 1;
+    let monthNum = refDate.getMonth() - 1;
     if (monthNum < 0) {
         monthNum = 11;
     }
+    let pastMonth = new Date().setMonth(monthNum);
+    return getMonth(new Date(pastMonth));
+}
+
+function getNextMonth(refDate) {
+    var monthNum = refDate.getMonth() + 1;
+    if (monthNum > 11) {
+        monthNum = 0;
+    }
     var pastMonth = refDate.setMonth(monthNum);
-    // var lastDay = getDaysOfMonth(getMonth(new Date(pastMonth)));
     return getMonth(new Date(pastMonth));
 }

@@ -45,6 +45,7 @@ h1 {
 
 #calendar header .arrow {
     width: 25px;
+    cursor: pointer;
 }
 
 #calendar header .arrow.prev {
@@ -83,6 +84,13 @@ h1 {
     background-color: #fff;
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+#calendar .days .current-month {
+    width: 100%;
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
