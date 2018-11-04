@@ -186,7 +186,7 @@ function renderDivOption(e) {
     let divDayOptions = new templateNode('.day-view-option');
     let divDayView = e.srcElement.querySelector('.day-view');
     if (divDayView instanceof HTMLElement) {
-        divDayView.style.display = "none";
+        // divDayView.style.display = "none";
     }
     e.srcElement.appendChild(divDayOptions);
 }
