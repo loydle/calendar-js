@@ -28,8 +28,8 @@ function renderCalendar(calendarNode, CalendarObj) {
             let dayTemplateDiv = new templateNode('.day', '', i);
             let dayViewTemplateDiv = new templateNode('.day-view', parentDivContent);
 
-            dayViewTemplateDiv.onmouseover = renderDivOption;
-            dayViewTemplateDiv.onmouseleave = removeDivOption;
+            dayTemplateDiv.onmouseover = renderDivOption;
+            dayTemplateDiv.onmouseout = removeDivOption;
 
 
             var sectionWeek = '.week-' + date.getDay();
@@ -143,7 +143,6 @@ function templateNode(classOrId, contentHTML, dataset) {
             div.innerHTML = contentHTML;
         }
         if (dataset) {
-
             div.dataset.day = dataset;
         }
         return div;
@@ -155,9 +154,22 @@ function templateNode(classOrId, contentHTML, dataset) {
 }
 
 function renderDivOption(e) {
-    var template = document.querySelector('template');
-    var divOptions = template.content.querySelector('.day-view-option');
-    console.log(e.srcElement)
+    let divDayOptions = new templateNode('.day-view-option');
+    let divDayView = e.srcElement.querySelector('.day-view');
+    if (divDayView instanceof HTMLElement) {
+        divDayView.style.display = "none";
+    }
+    e.srcElement.appendChild(divDayOptions);
 }
 
-function removeDivOption() {}
+function removeDivOption(e) {
+    let divDayView = e.srcElement.querySelector('.day-view');
+    if (divDayView instanceof HTMLElement) {
+        divDayView.style.display = "block";
+    }
+
+    var template = e.srcElement.querySelector('.day-view-option');
+    if (template) {
+        template.remove();
+    }
+}
