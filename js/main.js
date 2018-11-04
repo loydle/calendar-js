@@ -8,7 +8,6 @@ renderCalendar(
 //----------------------------------------------------------
 
 function renderCalendar(calendarNode, CalendarObj) {
-    console.log(CalendarObj);
 
     (function clearWeekViews() {
         var weeks = document.querySelectorAll('.week');
@@ -70,38 +69,50 @@ function renderCalendar(calendarNode, CalendarObj) {
                 }
             }
         }
-        var emptyDays = calendarHTMLElm.querySelectorAll('.current-month .week')
-        if (emptyDays.length) {
+        var row = calendarHTMLElm.querySelectorAll('.current-month .week')
+        if (row.length) {
+            for (let i = 0; i < row.length; i++) {
+                // console.log(row[row.length - i])
 
+                if (!row[i].querySelector('.day').dataset.date) {
+                    // console.log(row[i])
+                    var missingDay = daysInMonth(CalendarObj.date.getMonth(), CalendarObj.date.getFullYear(), 0) - i;
+                    var newDate = new Date(CalendarObj.date.getFullYear(), CalendarObj.date.getMonth() - 1, missingDay);
+                    var dayView = calendarHTMLElm.querySelector('.week-' + newDate.getDay() + ' .day .day-view');
+                    var section = calendarHTMLElm.querySelector('.week-' + newDate.getDay() + ' .day')
+                    section.classList.add('past');
+                    dayView.innerHTML = newDate.getDate();
+                }
+            }
             var emptyCells = 0;
 
 
-            for (let i = 0; i < emptyDays.length; i++) {
-                if (emptyDays[i] instanceof HTMLElement) {
-                    if (emptyDays[i].querySelector('.day-view') instanceof HTMLElement) {
+            // for (let i = 0; i < emptyDays.length; i++) {
+            //         if (emptyDays[i] instanceof HTMLElement) {
+            //             if (emptyDays[i].querySelector('.day-view') instanceof HTMLElement) {
 
-                        if (emptyDays[i].querySelector('.day-view').innerHTML === "") {
-                            emptyCells += 1;
-                        }
-                    }
-                }
-            }
+            //                 if (emptyDays[i].querySelector('.day-view').innerHTML === "") {
+            //                     emptyCells += 1;
+            //                 }
+            //             }
+            //         }
+            // }
 
 
-            var year = CalendarObj.date.getFullYear();
-            for (let i = 0; i < emptyCells; i++) {
-                var date = new Date(`${getPastMonth(CalendarObj.date)} ${getDaysOfMonth(CalendarObj.date) - i}, ${year}`);
-                try {
-                    var elm = calendarHTMLElm.querySelector('.week-' + date.getDay() + ' .day')
-                    elm.innerHTML = date.getDate()
-                    elm.classList.add('past')
-                    elm.dataset.day = date.getDate();
-                    elm.dataset.date = date;
+            //     var year = CalendarObj.date.getFullYear();
+            //     for (let i = 0; i < emptyCells; i++) {
+            //         var date = new Date(`${getPastMonth(CalendarObj.date)} ${getDaysOfMonth(CalendarObj.date) - i}, ${year}`);
+            //         try {
+            //             var elm = calendarHTMLElm.querySelector('.week-' + date.getDay() + ' .day')
+            //             elm.innerHTML = date.getDate()
+            //             elm.classList.add('past')
+            //             elm.dataset.day = date.getDate();
+            //             elm.dataset.date = date;
 
-                } catch (err) {
-                    console.error(err)
-                }
-            }
+            //         } catch (err) {
+            //             console.error(err)
+            //         }
+            //     }
         }
     }
 
@@ -124,6 +135,8 @@ function renderCalendar(calendarNode, CalendarObj) {
         var monthNode = calendarHTMLElm.querySelector('.month')
             .innerHTML = Calendar.year + '<br>' + Calendar.month;
     }
+    console.log(CalendarObj);
+
 }
 
 function renderDaysBehavior(calendarNode) {
@@ -161,14 +174,19 @@ function Calendar(Day) {
     this.year = getYear(Day.date);
     this.month = getMonth(Day.date);
     this.year = Day.date.getFullYear();
-    this.days = getDays(getDaysOfMonth(Day.date));
-    console.log(getDaysOfMonth(Day.date))
+    this.days = getDays(getDaysOfMonth(new Date(`${getMonth(Day.date)} 1, ${Day.date.getFullYear()}`)));
+    // console.log(new Date(`${getMonth(Day.date)} 1, ${Day.date.getFullYear()}`).getDay())
     this.dayOfWeek = getDayOfWeek(Day.date);
     return this;
 }
 
 function getDaysOfMonth(date) {
-    return new Date(date.getFullYear(), date.getMonth(), 0).getDate();
+    date.setMonth(date.getMonth())
+        // console.log(new Date(`${getMonth(date)} 1,${date.getFullYear()}`))
+        // console.log(new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate())
+    return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+    // var d = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    // return d.getDate();
 };
 
 function getDays(numDays) {
@@ -286,4 +304,8 @@ function Popup(srcElement) {
         return popupTemplate;
     }
 
+}
+
+function daysInMonth(month, year) {
+    return new Date(year, month, 0).getDate();
 }
