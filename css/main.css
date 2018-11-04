@@ -1,6 +1,7 @@
 * {
     margin: 0;
     padding: 0;
+    list-style: none;
 }
 
 body {
@@ -78,25 +79,40 @@ h1 {
 }
 
 #calendar .days {
-    display: flex;
-    flex-wrap: wrap;
     width: 100%;
     background-color: #fff;
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
 }
 
-#calendar .days .day-view {
-    text-align: center;
+#calendar section.days section.week {
     width: calc(100% / 7);
-    height: 100px;
-    line-height: 100px;
-    border-radius: 4px;
-    display: relative;
-    display: inline-block;
 }
 
-#calendar .days .day-view .template-option {
+#calendar section.days .past-week section {
+    width: calc(100%/7);
+}
+
+#calendar section.days section.past-week {
+    width: calc(100%);
+    display: flex;
+}
+
+#calendar section.days .day {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    border-radius: 4px;
+    position: relative;
+    min-height: 110px;
+}
+
+#calendar section.days .day .template-option {
     text-align: left;
     line-height: 0;
     width: 100%;
@@ -106,16 +122,14 @@ h1 {
     background-color: #677077
 }
 
-#calendar .days {}
-
-#calendar .days .day-view.today,
-#calendar .days .day-view.today:hover {
+#calendar section.days .day.today,
+#calendar section.days .day.today:hover {
     background-color: #f2b632;
     color: #fff;
     cursor: pointer;
 }
 
-#calendar .days .day-view:hover {
+#calendar section.days .day:hover {
     background-color: rgba(238, 238, 238, 0.479);
     color: #222;
     cursor: pointer;
@@ -123,4 +137,5 @@ h1 {
 
 .hidden {
     display: none;
+    opacity: 0;
 }

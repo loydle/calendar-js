@@ -18,28 +18,39 @@ function renderCalendar(calendarNode, CalendarObj) {
     renderTodayMonth(calendarNode, CalendarObj);
 
     function renderDays(calendarHTMLElm, Calendar) {
-        for (let i = 1; i <= Calendar.days.length; i++) {
-            let parentDivDay = new templateNode('.day-view', i, i);
-            parentDivDay.addEventListener('click', function renderDivOptions(e) {
-                if (parentDivDay.querySelector('.day-view-option')) {
-                    parentDivDay.querySelector('.day-view-option').remove()
-                } else {
-                    var template = new templateNode('.day-view-option');
-                    parentDivDay.appendChild(template);
-                }
 
-            });
-            calendarHTMLElm.querySelector('section.days')
-                .appendChild(parentDivDay);
+        for (let i = 1; i <= Calendar.days.length; i++) {
+            var date = new Date(`${Calendar.month} ${i}, ${Calendar.year}`);
+            var parentDivContent = `${date.getDate()}`;
+            if (Calendar.today === i) {
+                parentDivContent = `${Calendar.today} ${Calendar.month}<br>${Calendar.year}`
+            }
+            let dayTemplateDiv = new templateNode('.day', '', i);
+            let dayViewTemplateDiv = new templateNode('.day-view', parentDivContent);
+
+            dayViewTemplateDiv.onmouseover = renderDivOption;
+            dayViewTemplateDiv.onmouseleave = removeDivOption;
+
+
+            var sectionWeek = '.week-' + date.getDay();
+            var sectionPastWeek = '.past-week-' + date.getDay();
+            dayTemplateDiv.appendChild(dayViewTemplateDiv)
+            if (date.getDate() >= Calendar.today) {
+                calendarHTMLElm.querySelector('section.days ' + sectionWeek)
+                    .appendChild(dayTemplateDiv);
+            } else {
+                calendarHTMLElm.querySelector('section.days  .past-week ' + sectionPastWeek)
+                    .appendChild(dayTemplateDiv);
+            }
         }
     }
 
     function renderTodayActiveDay(calendarHTMLElm, Calendar) {
-        var daysNode = calendarHTMLElm.querySelectorAll('div.day-view');
+        var daysNode = calendarHTMLElm.querySelectorAll('section.week .day');
         for (var i = 0; i < daysNode.length; i++) {
             if (daysNode[i].dataset.day == Calendar.today) {
-                daysNode[i].classList
-                    .add('today');
+                daysNode[i].classList.add('today');
+
             } else {
                 daysNode[i].classList
                     .remove('today');
@@ -127,11 +138,14 @@ function getMonth() {
 
 function templateNode(classOrId, contentHTML, dataset) {
     if (document.querySelector('template').content) {
-        var div = document.querySelector('template').content.querySelector(classOrId).cloneNode(true);
+        var div = document.importNode(document.querySelector('template').content.querySelector(classOrId), true);
         if (contentHTML) {
             div.innerHTML = contentHTML;
         }
-        div.dataset.day = dataset;
+        if (dataset) {
+
+            div.dataset.day = dataset;
+        }
         return div;
     } else {
         var div = document.createElement('div');
@@ -139,3 +153,11 @@ function templateNode(classOrId, contentHTML, dataset) {
         return div;
     }
 }
+
+function renderDivOption(e) {
+    var template = document.querySelector('template');
+    var divOptions = template.content.querySelector('.day-view-option');
+    console.log(e.srcElement)
+}
+
+function removeDivOption() {}
