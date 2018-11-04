@@ -15,9 +15,16 @@
     <h1>A simple <span class="yellow">HTML5 / JS</span> calendar</h1>
     <div id="calendar">
         <header>
-            <img class="arrow prev" src="./img/next.svg">
-            <div class="month">2018<br>November </div>
-            <img class="arrow next" src="./img/next.svg"> </header>
+            <div>
+                <img class="arrow prev" src="./img/next.svg">
+            </div>
+            <div>
+                <div class="month">2018<br>November </div>
+            </div>
+            <div>
+                <img class="arrow next" src="./img/next.svg">
+            </div>
+        </header>
         <section class="day-name ">
             <ul>
                 <li>S</li>
@@ -58,6 +65,9 @@
         <div class="day-view-option">
           <ul>
           </ul>
+        </div>
+        <div class="popup">
+          <ul>          </ul>
         </div>
     </template>
     <script src="js/vendor/modernizr-3.6.0.min.js"></script>

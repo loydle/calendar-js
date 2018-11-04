@@ -23,7 +23,6 @@ function renderCalendar(calendarNode, CalendarObj) {
     prev.onclick = prevView;
 
     function nextView(e) {
-
         var lastMonthDate = CalendarObj.date;
         lastMonthDate.setDate(1);
         lastMonthDate.setMonth(lastMonthDate.getMonth() + 1);
@@ -42,6 +41,9 @@ function renderCalendar(calendarNode, CalendarObj) {
     renderDays(calendarNode, CalendarObj);
     renderTodayActiveDay(calendarNode, CalendarObj);
     renderTodayMonth(calendarNode, CalendarObj);
+    renderDaysBehavior(calendarNode);
+
+
 
     function renderDays(calendarHTMLElm, CalendarObj) {
         for (let i = 1; i <= CalendarObj.days.length; i++) {
@@ -52,6 +54,7 @@ function renderCalendar(calendarNode, CalendarObj) {
             var dayContainer = template.querySelector('.day').cloneNode(true)
             dayContainer.appendChild(dayView);
             dayContainer.dataset.day = date.getDate();
+            dayContainer.dataset.date = date;
             dayView.innerHTML = date.getDate();
             calendarHTMLElm.querySelector('.days .current-month .week-' + currentWeek).appendChild(dayContainer);
 
@@ -60,6 +63,7 @@ function renderCalendar(calendarNode, CalendarObj) {
                     for (let i = 0; i < date.getDay(); i++) {
                         var dayView = template.querySelector('.day-view').cloneNode(true)
                         var dayContainer = template.querySelector('.day').cloneNode(true)
+
                         dayContainer.appendChild(dayView);
                         calendarHTMLElm.querySelector('.days .current-month .week-' + i).appendChild(dayContainer);
                     }
@@ -86,14 +90,15 @@ function renderCalendar(calendarNode, CalendarObj) {
             var pastMonth = getPastMonth(CalendarObj.date);
             var lastDay = getDaysOfMonth(pastMonth);
             var year = CalendarObj.date.getFullYear();
-
             for (let i = 0; i < emptyCells; i++) {
                 var date = new Date(`${pastMonth} ${lastDay - i}, ${year}`);
                 try {
-
                     var elm = calendarHTMLElm.querySelector('.week-' + date.getDay() + ' .day')
                     elm.innerHTML = date.getDate()
                     elm.classList.add('past')
+                    elm.dataset.day = date.getDate();
+                    elm.dataset.date = date;
+
                 } catch (err) {
                     console.error(err)
                 }
@@ -119,6 +124,19 @@ function renderCalendar(calendarNode, CalendarObj) {
     function renderTodayMonth(calendarHTMLElm, Calendar) {
         var monthNode = calendarHTMLElm.querySelector('.month')
             .innerHTML = Calendar.year + '<br>' + Calendar.month;
+    }
+}
+
+function renderDaysBehavior(calendarNode) {
+    var daysNodeList = calendarNode.querySelectorAll('.day');
+    for (let i = 0; i < daysNodeList.length; i++) {
+        daysNodeList[i].onclick = popupAction;
+    }
+
+    function popupAction(e) {
+        var srcElement = e.srcElement;
+        new Popup(srcElement);
+
     }
 }
 
@@ -245,4 +263,38 @@ function getNextMonth(refDate) {
     }
     var pastMonth = refDate.setMonth(monthNum);
     return getMonth(new Date(pastMonth));
+}
+
+function Popup(srcElement) {
+    if (document.querySelector('.popup')) {
+        var popupTemplate = document.querySelector('.popup');
+        popupTemplate.style.display = "block";
+        popupTemplate.style.opacity = "1";
+
+
+    } else {
+        var template = document.querySelector('template').content;
+        var popupTemplate = template.querySelector('.popup');
+        popupTemplate.onclick = close;
+
+        function close(e) {
+            if (e.srcElement.classList[0] === "popup") {
+                e.srcElement.style.opacity = "0";
+                setTimeout(() => {
+                    popupTemplate.style.display = "none";
+                }, 300);
+            }
+        }
+        var li = document.createElement('li');
+        li.innerHTML = 'view tasks';
+        li.onclick = viewTasks;
+
+        function viewTasks(e) {
+
+        }
+        popupTemplate.querySelector('ul').appendChild(li);
+        document.body.appendChild(popupTemplate)
+        return popupTemplate;
+    }
+
 }
