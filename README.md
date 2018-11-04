@@ -1,7 +1,7 @@
 # Calendar JS - WIP
 A simple HTML5 / JS calendar
 
-![screenshot](https://serving.photos.photobox.com/05546632554e0de5b3d354e797abc7a31e137e85c908881fd5ab18ff5e47c8ba3a185ff6.jpg)
+[![browser-1.png](https://i.postimg.cc/4NFdxY3n/browser-1.png)](https://postimg.cc/JGZmT4ZW)
 
 # MIT License
 
