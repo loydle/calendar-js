@@ -119,6 +119,12 @@ h1 {
     cursor: pointer;
 }
 
+#calendar section.days .day.past,
+#calendar section.days .day.past:hover {
+    color: #f2b632;
+    cursor: pointer;
+}
+
 #calendar section.days .day:hover {
     background-color: rgba(238, 238, 238, 0.479);
     color: #222;

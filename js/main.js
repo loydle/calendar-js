@@ -43,6 +43,30 @@ function renderCalendar(calendarNode, CalendarObj) {
                     .appendChild(dayTemplateDiv);
             }
         }
+        var emptyDays = calendarHTMLElm.querySelectorAll('.past-week .week')
+        if (emptyDays.length) {
+            var pastMonth = getPastMonth(Calendar.date);
+            var lastDay = getDaysOfMonth(pastMonth);
+            var date = new Date();
+            var emptyCells = 0;
+            for (let i = 0; i < emptyDays.length; i++) {
+                if (emptyDays[i] instanceof HTMLElement) {
+                    if (emptyDays[i].innerHTML === "") {
+                        emptyCells += 1;
+                    }
+                }
+            }
+            for (let i = 0; i < emptyCells; i++) {
+                date = new Date(`${pastMonth} ${lastDay - i}, ${Calendar.year}`);
+
+                let dayTemplateDiv = new templateNode('.day', '');
+
+                let dayViewTemplateDiv = new templateNode('.day-view', date.getDate() + '');
+                dayTemplateDiv.classList.add('past');
+                dayTemplateDiv.appendChild(dayViewTemplateDiv);
+                emptyDays[date.getDay()].appendChild(dayTemplateDiv);
+            }
+        }
     }
 
     function renderTodayActiveDay(calendarHTMLElm, Calendar) {
@@ -97,6 +121,7 @@ function Calendar(Day) {
 }
 
 function getDaysOfMonth(month) {
+    console.log(month)
     var month = month || [];
     if (month === 'February') {
         return function getDaysOfFebruary() {
@@ -130,10 +155,14 @@ function getYear() {
     return today.getFullYear();
 }
 
-function getMonth() {
-    var today = new Date();
+function getMonth(date) {
     var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-    return months[today.getMonth()];
+    if (date) {
+        return months[date.getMonth()];
+    } else {
+        var today = new Date();
+        return months[today.getMonth()];
+    }
 }
 
 function templateNode(classOrId, contentHTML, dataset) {
@@ -172,4 +201,15 @@ function removeDivOption(e) {
     if (template) {
         template.remove();
     }
+}
+
+function getPastMonth(refDate) {
+
+    var monthNum = refDate.getMonth() - 1;
+    if (monthNum < 0) {
+        monthNum = 11;
+    }
+    var pastMonth = refDate.setMonth(monthNum);
+    // var lastDay = getDaysOfMonth(getMonth(new Date(pastMonth)));
+    return getMonth(new Date(pastMonth));
 }
