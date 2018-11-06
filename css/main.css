@@ -1,6 +1,4 @@
 * {
-    margin: 0;
-    padding: 0;
     list-style: none;
 }
 
@@ -12,7 +10,7 @@ body {
 
 .yellow {
     background-color: #f2b632;
-    color: #222;
+    color: #252839;
     padding-left: 12px;
     padding-right: 12px;
 }
@@ -24,6 +22,7 @@ h1 {
 
 .month {
     text-align: center;
+    color: #252839;
 }
 
 #calendar {
@@ -32,6 +31,7 @@ h1 {
 
 #calendar header {
     background-color: #eee;
+    color: #252839;
     font-size: 150%;
     display: flex;
     width: 100%;
@@ -117,14 +117,14 @@ h1 {
 }
 
 #calendar section.days .day {
-    text-align: center;
+    color: #252839;
     display: flex;
     justify-content: center;
     flex-direction: column;
     text-align: center;
     border-radius: 4px;
-    position: relative;
-    min-height: 110px;
+    min-height: 12vw;
+    font-size: 20px;
 }
 
 #calendar section.days .day.today,
