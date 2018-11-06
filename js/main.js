@@ -187,7 +187,11 @@ function Calendar(Day) {
     this.month = monthToString(Day.date);
     this.year = Day.date.getFullYear();
     this.days = getArrayOfDays(getNmbOfDaysInMonth(this.date));
-    this.dayOfWeek = getDayOfWeek(Day.date);
+    this.dayOfWeek = dayToString(Day.date);
+
+    function getYear(dateObj) {
+        return dateObj.getFullYear();
+    }
 
     function getArrayOfDays(nbOfDays) {
         let days = [];
@@ -206,26 +210,32 @@ function Calendar(Day) {
     };
 
     return this;
-}
+};
 
-function getDayOfWeek(dateObj) {
-    let daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-    return daysOfWeek[dateObj.getDay()];
-}
+function dayToString(dateObj) {
+    try {
+        let daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+        return daysOfWeek[dateObj.getDay()];
+    } catch (err) {
+        console.trace(err);
+    };
+};
 
-function getYear(dateObj) {
-    return dateObj.getFullYear();
-}
 
 function monthToString(date) {
-    let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-    if (date) {
-        return months[date.getMonth()];
-    } else {
-        let today = new Date();
-        return months[today.getMonth()];
-    }
-}
+    try {
+
+        let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+        if (date) {
+            return months[date.getMonth()];
+        } else {
+            let today = new Date();
+            return months[today.getMonth()];
+        };
+    } catch (err) {
+        console.trace(err);
+    };
+};
 
 // function Popup(srcElement, selector) {
 //     let template = document.querySelector('template').content;
