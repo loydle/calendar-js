@@ -24,7 +24,7 @@ function renderCalendar(calendarNode, CalendarObj, template) {
     function clearWeekViews(calendarNode) {
         if (calendarNode instanceof HTMLElement) {
             let weeksArray = nodeListToArray(calendarNode.querySelectorAll('.week'));
-            weeksArray.map(w => w.innerHTML = "")
+            weeksArray.map(w => w.innerHTML = '');
         }
     }
 
@@ -49,12 +49,11 @@ function renderCalendar(calendarNode, CalendarObj, template) {
                 newDate.setMonth(
                     newDate.getMonth() - 1
                 );
-            };
+            }
             renderCalendar(
                 calendarNode,
                 new Calendar(new Day(newDate)),
-                template,
-            );
+                template);
         }
     }
 
@@ -86,14 +85,14 @@ function renderCalendar(calendarNode, CalendarObj, template) {
                 if (i === 1) {
                     if (day.week != 0) {
                         for (let i = 0; i < day.week; i++) {
-                            const dayView = template.querySelector('.day-view').cloneNode(true)
+                            const dayView = template.querySelector('.day-view').cloneNode(true);
                             const dayContainer = template.querySelector('.day').cloneNode(true);
                             dayContainer.appendChild(dayView);
                             calendarHTMLElm.querySelector('.days .current-month .week-' + i).appendChild(dayContainer);
                         }
                     }
                 }
-                let row = calendarHTMLElm.querySelectorAll('.current-month .week')
+                let row = calendarHTMLElm.querySelectorAll('.current-month .week');
                 if (row.length) {
                     for (let i = 0; i < row.length; i++) {
                         if (row[i].querySelector('.day') instanceof HTMLElement) {
@@ -102,7 +101,7 @@ function renderCalendar(calendarNode, CalendarObj, template) {
                                 let missingDay = daysInMonth(CalendarObj.date.getMonth(), CalendarObj.date.getFullYear(), 0) - i;
                                 let newDate = new Date(CalendarObj.date.getFullYear(), CalendarObj.date.getMonth() - 1, missingDay);
                                 let dayView = calendarHTMLElm.querySelector('.week-' + newDate.getDay() + ' .day .day-view');
-                                let section = calendarHTMLElm.querySelector('.week-' + newDate.getDay() + ' .day')
+                                let section = calendarHTMLElm.querySelector('.week-' + newDate.getDay() + ' .day');
                                 section.dataset.date = newDate;
                                 section.dataset.id = newDate;
                                 section.classList.add('past');
@@ -130,31 +129,29 @@ function renderCalendar(calendarNode, CalendarObj, template) {
                     } else {
                         daysNode[i].classList
                             .remove('today');
-                    };
-                };
-            };
-        };
+                    }
+                }
+            }
+        }
 
         function renderDaysBehavior(calendarNode) {
-            let daysArray = nodeListToArray(
-                calendarNode.querySelectorAll('.day')
-            );
+            let daysArray = nodeListToArray(calendarNode.querySelectorAll('.day'));
 
-            daysArray.forEach(elm => elm.onclick = popupAction)
+            daysArray.forEach(elm => elm.onclick = popupAction);
 
 
             function popupAction(e) {
                 let srcElement = e.srcElement;
                 let id;
                 if (e.srcElement instanceof HTMLElement) {
-                    if (e.srcElement.classList.value.match(/day\-view/)) {
+                    if (e.srcElement.classList.value.match(/day-view/)) {
                         srcElement = e.srcElement.parentNode;
-                    };
-                };
+                    }
+                }
                 if (srcElement.dataset.id) {
                     id = srcElement.dataset.id;
-                };
-                console.trace({ id: hashString(id) })
+                }
+                console.trace({ id: hashString(id) });
             }
         }
 
@@ -167,7 +164,7 @@ function renderCalendar(calendarNode, CalendarObj, template) {
         if (monthNode instanceof HTMLElement) {
             monthNode.innerHTML = Calendar.year + '<br>' + Calendar.month;
         }
-    };
+    }
 }
 
 function Day(dayAsDateObj) {
@@ -194,50 +191,50 @@ function Calendar(Day) {
 
     function getYear(dateObj) {
         return dateObj.getFullYear();
-    };
+    }
 
     function getArrayOfDays(nbOfDays) {
         let days = [];
         for (let i = 1; i <= nbOfDays; i++) {
             days.push(i);
-        };
+        }
         return days;
-    };
+    }
 
     function getNmbOfDaysInMonth(date) {
         try {
-            return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()
+            return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
         } catch (err) {
             console.trace(err);
-        };
-    };
+        }
+    }
 
     return this;
-};
+}
 
 function dayToString(dateObj) {
     try {
-        let daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+        let daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
         return daysOfWeek[dateObj.getDay()];
     } catch (err) {
         console.trace(err);
-    };
-};
+    }
+}
 
 
 function monthToString(date) {
     try {
-        let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+        let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
         if (date) {
             return months[date.getMonth()];
         } else {
             let today = new Date();
             return months[today.getMonth()];
-        };
+        }
     } catch (err) {
         console.trace(err);
-    };
-};
+    }
+}
 
 // function Popup(srcElement, selector) {
 //     let template = document.querySelector('template').content;
@@ -374,6 +371,6 @@ function nodeListToArray(nodeList) {
 }
 
 function hashString(s) {
-    return s.split("").reduce(function(a, b) { a = ((a << 5) - a) + b.charCodeAt(0); return a & a }, 0);
+    return s.split('').reduce(function(a, b) { a = ((a << 5) - a) + b.charCodeAt(0); return a & a; }, 0);
 
-};
+}
