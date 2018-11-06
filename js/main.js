@@ -189,9 +189,12 @@ function Calendar(Day) {
     this.days = getArrayOfDays(getNmbOfDaysInMonth(this.date));
     this.dayOfWeek = dayToString(Day.date);
 
+    //----
+    //----
+
     function getYear(dateObj) {
         return dateObj.getFullYear();
-    }
+    };
 
     function getArrayOfDays(nbOfDays) {
         let days = [];
@@ -224,7 +227,6 @@ function dayToString(dateObj) {
 
 function monthToString(date) {
     try {
-
         let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
         if (date) {
             return months[date.getMonth()];
