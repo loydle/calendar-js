@@ -22,9 +22,14 @@ function renderCalendar(calendarNode, CalendarObj, template) {
     // ---------
 
     function clearWeekViews(calendarNode) {
-        if (calendarNode instanceof HTMLElement) {
-            let weeksArray = nodeListToArray(calendarNode.querySelectorAll('.week'));
-            weeksArray.map(w => w.innerHTML = '');
+        try {
+
+            if (calendarNode instanceof HTMLElement) {
+                let weeksArray = nodeListToArray(calendarNode.querySelectorAll('.week'));
+                weeksArray.map(w => w.innerHTML = '');
+            }
+        } catch (err) {
+            // fallback
         }
     }
 
@@ -63,7 +68,6 @@ function renderCalendar(calendarNode, CalendarObj, template) {
                 new Date(`
                 ${CalendarObj.month} ${i}, ${CalendarObj.year} 00:00`)
             );
-
             const dayView = template.querySelector('.day-view').cloneNode(true);
             const dayContainer = template.querySelector('.day').cloneNode(true);
             const weekContainer = calendarHTMLElm.querySelector('.days .current-month .week-' + day.week);
@@ -79,43 +83,47 @@ function renderCalendar(calendarNode, CalendarObj, template) {
                 dayContainer.appendChild(dayView);
                 weekContainer.appendChild(dayContainer);
 
-            }
-
-            (function renderPastWeek(i) {
-                if (i === 1) {
-                    if (day.week != 0) {
-                        for (let i = 0; i < day.week; i++) {
-                            const dayView = template.querySelector('.day-view').cloneNode(true);
-                            const dayContainer = template.querySelector('.day').cloneNode(true);
-                            dayContainer.appendChild(dayView);
-                            calendarHTMLElm.querySelector('.days .current-month .week-' + i).appendChild(dayContainer);
-                        }
-                    }
-                }
-                let row = calendarHTMLElm.querySelectorAll('.current-month .week');
-                if (row.length) {
-                    for (let i = 0; i < row.length; i++) {
-                        if (row[i].querySelector('.day') instanceof HTMLElement) {
-                            if (!row[i].querySelector('.day').dataset.day) {
-
-                                let missingDay = daysInMonth(CalendarObj.date.getMonth(), CalendarObj.date.getFullYear(), 0) - i;
-                                let newDate = new Date(CalendarObj.date.getFullYear(), CalendarObj.date.getMonth() - 1, missingDay);
-                                let dayView = calendarHTMLElm.querySelector('.week-' + newDate.getDay() + ' .day .day-view');
-                                let section = calendarHTMLElm.querySelector('.week-' + newDate.getDay() + ' .day');
-                                section.dataset.date = newDate;
-                                section.dataset.id = newDate;
-                                section.classList.add('past');
-                                dayView.innerHTML = newDate.getDate();
+                (function renderPastWeek(i) {
+                    if (i === 1) {
+                        if (day.week != 0) {
+                            for (let i = 0; i < day.week; i++) {
+                                const dayView = template.querySelector('.day-view').cloneNode(true);
+                                const dayContainer = template.querySelector('.day').cloneNode(true);
+                                dayContainer.appendChild(dayView);
+                                calendarHTMLElm.querySelector('.days .current-month .week-' + i).appendChild(dayContainer);
                             }
                         }
+                    }
 
+
+                }(i));
+            } else {
+                console.error('not an HTML element');
+            }
+        }
+
+        let row = calendarHTMLElm.querySelectorAll('.current-month .week');
+        if (row.length) {
+            for (let i = 0; i < row.length; i++) {
+                if (row[i].querySelector('.day') instanceof HTMLElement) {
+                    if (!row[i].querySelector('.day').dataset.day) {
+
+                        let missingDay = daysInMonth(CalendarObj.date.getMonth(), CalendarObj.date.getFullYear(), 0) - i;
+                        let newDate = new Date(CalendarObj.date.getFullYear(), CalendarObj.date.getMonth() - 1, missingDay);
+                        let dayView = calendarHTMLElm.querySelector('.week-' + newDate.getDay() + ' .day .day-view');
+                        let section = calendarHTMLElm.querySelector('.week-' + newDate.getDay() + ' .day');
+                        section.dataset.date = newDate;
+                        section.dataset.id = newDate;
+                        section.classList.add('past');
+                        dayView.innerHTML = newDate.getDate();
                     }
                 }
 
-            }(i));
+            }
         }
         renderTodayActiveDay(calendarNode, CalendarObj);
         renderDaysBehavior(calendarNode);
+
 
         function renderTodayActiveDay(calendarHTMLElm, CalendarObj) {
             if (
@@ -232,129 +240,9 @@ function monthToString(date) {
             return months[today.getMonth()];
         }
     } catch (err) {
-        console.trace(err);
+        // fallback
     }
 }
-
-// function Popup(srcElement, selector) {
-//     let template = document.querySelector('template').content;
-//     if (srcElement.classList[0] === 'day-view') {
-//         srcElement = srcElement.parentNode;
-//     }
-//     let parentDataset = srcElement.dataset;
-//     let canvas = template.querySelector(selector) || document.querySelector('.popup ' + selector);
-//     canvas.width = 400;
-//     canvas.height = 528;
-//     let popupTemplate = template.querySelector('.popup') || document.querySelector('.popup');
-//     let config = {
-//         backgroundColor: 'rgba(255,255, 255,0.9)',
-//     };
-//     let ctx = canvas.getContext('2d');
-
-//     let data = [{
-//             y: 45,
-//             content: "Meeting",
-//             duration: 1,
-//         },
-//         {
-//             y: 176,
-//             content: 'Lorem ipsum dolore set amet',
-//             duration: 4,
-//         },
-//     ]
-//     drawCanvas(data)
-
-//     canvas.addEventListener('mouseenter', (e) => {
-//         canvas.addEventListener('mousemove', (e) => {
-//             canvas.onclick = saveData;
-//             drawCanvas(data)
-//             ctx.fillStyle = '#CCC';
-//             ctx.fillRect(68, e.offsetY - 20, canvas.width, 40);
-
-//             function saveData() {
-//                 data.push({ y: e.offsetY - 20, content: 'Quae dolorem ut facere nemo consectetur.', duration: 1, })
-//                 drawCanvas(data)
-//             }
-//         })
-//     })
-
-//     function drawCanvas(data) {
-//         for (let i = 0; i < 24; i++) {
-//             let getContent = new Promise(function(resolve, reject) {
-//                 resolve({
-//                     date: new Date('1 Jan 2019 ' +
-//                         i + ':00').getHours(),
-//                     i: i,
-//                 })
-//             })
-//             getContent.then(function(c) {
-//                 for (let i = 0; i < data.length; i++) {
-//                     ctx.fillStyle = "#f2b632"
-//                     ctx.fillRect(68, data[i].y, 1000, data[i].duration * 40);
-//                     ctx.fillStyle = "#FFF"
-
-//                     ctx.font = "14px Montserrat, sans-serif ";
-//                     ctx.fillText(data[i].content, 80, data[i].y + 24)
-//                 }
-//                 drawLine(ctx, 0, c.i * 22, c, '#999');
-//             })
-
-//             ctx.fillStyle = '#ffffff';
-//             ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-//         }
-//     }
-
-//     popupTemplate.onclick = _closePopup;
-
-
-//     if (document.querySelector('.popup')) {
-//         popupTemplate.style.display = "block";
-//         popupTemplate.style.opacity = "1";
-//     } else {
-
-//         popupTemplate.appendChild(canvas);
-//         document.body.appendChild(popupTemplate)
-//         return popupTemplate;
-//     }
-
-//     function _closePopup(e) {
-//         if (e.srcElement.classList[0] === "popup") {
-//             e.srcElement.style.opacity = "0";
-//             setTimeout(() => {
-//                 popupTemplate.style.display = "none";
-//             }, 300);
-//         }
-//         return 0;
-//     }
-
-
-
-//     function drawLine(ctx, x, y, content, color) {
-//         if (content.date % 2) {
-
-//             ctx.fillStyle = color;
-//             ctx.font = "14px Montserrat, sans-serif ";
-
-//             if (content.date <= 9) {
-//                 content.date = '0' + content.date;
-//             };
-//             ctx.fillText(content.date + ':00', 12, y + 4);
-//             ctx.lineWidth = 1;
-//             ctx.strokeStyle = '#EEE';
-//             if (y != 0) {
-//                 ctx.beginPath();
-//                 ctx.moveTo(x, y + 20);
-//                 ctx.lineTo(1000, y + 20);
-//                 ctx.stroke();
-//             }
-//         }
-
-
-//     }
-
-
-// }
 
 
 
@@ -367,10 +255,17 @@ function daysInMonth(month, year) {
 }
 
 function nodeListToArray(nodeList) {
-    return [].slice.call(nodeList) || [document.createElement('div')];
+    try {
+        if (nodeList[0] instanceof HTMLElement) {
+            return [].slice.call(nodeList);
+        } else {
+            return [document.createElement('div')];
+        }
+    } catch (err) {
+        return [document.createElement('div')];
+    }
 }
 
 function hashString(s) {
     return s.split('').reduce(function(a, b) { a = ((a << 5) - a) + b.charCodeAt(0); return a & a; }, 0);
-
 }

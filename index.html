@@ -13,11 +13,9 @@
     <h1>A simple <span class="yellow">HTML5 / JS</span> calendar</h1>
     <div id="calendar">
         <header>
+            <div><img class="arrow prev" src="./img/arrow.svg"> </div>
             <div>
-                <img class="arrow prev" src="./img/arrow.svg">
-            </div>
-            <div>
-                <div class="month">2018<br>November </div>
+                <div class="month"></div>
             </div>
             <div>
                 <img class="arrow next" src="./img/arrow.svg">
@@ -48,6 +46,8 @@
             </section>
         </section>
     </div>
+
+
     <template>
       <div class="day"></div>
         <div class="day-view"></div>
@@ -59,6 +59,9 @@
         </div>
         <canvas  id="task-board"></canvas>
       </template>
+
+
+
     <script src="js/main.js"></script>
 
 </body>
