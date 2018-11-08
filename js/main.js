@@ -12,7 +12,7 @@ renderCalendar(
 //----------------------------------------------------------
 
 function renderCalendar(calendarNode, CalendarObj, template) {
-
+    console.log(CalendarObj);
     clearWeekViews(calendarNode);
     prevNextBtnClickEvent(calendarNode, CalendarObj);
     renderDays(calendarNode, CalendarObj, template);
@@ -76,30 +76,25 @@ function renderCalendar(calendarNode, CalendarObj, template) {
                 dayContainer instanceof HTMLElement &&
                 weekContainer instanceof HTMLElement
             ) {
-                dayContainer.dataset.id = day.date;
-                dayContainer.dataset.day = day.day;
-                dayContainer.dataset.date = day.date;
+                setDatasetContainerDay(dayContainer, day);
                 dayView.innerHTML = day.day;
                 dayContainer.appendChild(dayView);
                 weekContainer.appendChild(dayContainer);
 
-                (function renderPastWeek(i) {
-                    if (i === 1) {
-                        if (day.week != 0) {
-                            for (let i = 0; i < day.week; i++) {
-                                const dayView = template.querySelector('.day-view').cloneNode(true);
-                                const dayContainer = template.querySelector('.day').cloneNode(true);
-                                dayContainer.appendChild(dayView);
-                                calendarHTMLElm.querySelector('.days .current-month .week-' + i).appendChild(dayContainer);
-                            }
-                        }
-                    }
 
-
-                }(i));
             } else {
                 console.error('not an HTML element');
             }
+            (function addPastWeekView(i) {
+                if (i === 1 && day.week != 0) {
+                    for (let i = 0; i < day.week; i++) {
+                        const dayView = template.querySelector('.day-view').cloneNode(true);
+                        const dayContainer = template.querySelector('.day').cloneNode(true);
+                        dayContainer.appendChild(dayView);
+                        calendarHTMLElm.querySelector('.days .current-month .week-' + i).appendChild(dayContainer);
+                    }
+                }
+            }(i));
         }
 
         let row = calendarHTMLElm.querySelectorAll('.current-month .week');
@@ -107,12 +102,19 @@ function renderCalendar(calendarNode, CalendarObj, template) {
             for (let i = 0; i < row.length; i++) {
                 if (row[i].querySelector('.day') instanceof HTMLElement) {
                     if (!row[i].querySelector('.day').dataset.day) {
+                        let pastDayNb = daysInMonth(
+                            CalendarObj.date.getMonth(), CalendarObj.date.getFullYear(), 0
+                        ) - i;
 
-                        let missingDay = daysInMonth(CalendarObj.date.getMonth(), CalendarObj.date.getFullYear(), 0) - i;
-                        let newDate = new Date(CalendarObj.date.getFullYear(), CalendarObj.date.getMonth() - 1, missingDay);
-                        let dayView = calendarHTMLElm.querySelector('.week-' + newDate.getDay() + ' .day .day-view');
-                        let section = calendarHTMLElm.querySelector('.week-' + newDate.getDay() + ' .day');
-                        section.dataset.date = newDate;
+                        let newDate = new Date(
+                            CalendarObj.date.getFullYear(), CalendarObj.date.getMonth() - 1, pastDayNb
+                        );
+                        let dayView = calendarHTMLElm.querySelector(
+                            '.week-' + newDate.getDay() + ' .day .day-view'
+                        );
+                        let section = calendarHTMLElm.querySelector(
+                            '.week-' + newDate.getDay() + ' .day'
+                        );
                         section.dataset.id = newDate;
                         section.classList.add('past');
                         dayView.innerHTML = newDate.getDate();
@@ -121,6 +123,7 @@ function renderCalendar(calendarNode, CalendarObj, template) {
 
             }
         }
+
         renderTodayActiveDay(calendarNode, CalendarObj);
         renderDaysBehavior(calendarNode);
 
@@ -132,7 +135,7 @@ function renderCalendar(calendarNode, CalendarObj, template) {
             ) {
                 const daysNode = calendarHTMLElm.querySelectorAll('section.week .day');
                 for (let i = 0; i < daysNode.length; i++) {
-                    if (new Date(daysNode[i].dataset.date).getDate() == new Date().getDate()) {
+                    if (daysNode[i].dataset.day == new Date().getDate()) {
                         daysNode[i].classList.add('today');
                     } else {
                         daysNode[i].classList
@@ -144,9 +147,7 @@ function renderCalendar(calendarNode, CalendarObj, template) {
 
         function renderDaysBehavior(calendarNode) {
             let daysArray = nodeListToArray(calendarNode.querySelectorAll('.day'));
-
             daysArray.forEach(elm => elm.onclick = popupAction);
-
 
             function popupAction(e) {
                 let srcElement = e.srcElement;
@@ -170,13 +171,13 @@ function renderCalendar(calendarNode, CalendarObj, template) {
     function renderMonthAndYearTitle(calendarHTMLElm, Calendar) {
         let monthNode = calendarHTMLElm.querySelector('.month');
         if (monthNode instanceof HTMLElement) {
-            monthNode.innerHTML = Calendar.year + '<br>' + Calendar.month;
+            monthNode.innerHTML = `${Calendar.year}<br>${Calendar.month}`;
         }
     }
 }
 
 function Day(dayAsDateObj) {
-    this.id = hashString(String(dayAsDateObj));
+    this.id = dayAsDateObj;
     this.date = dayAsDateObj;
     this.day = dayAsDateObj.getDate();
     this.week = dayAsDateObj.getDay();
@@ -191,8 +192,8 @@ function Calendar(Day) {
     this.year = getYear(Day.date);
     this.month = monthToString(Day.date);
     this.year = Day.date.getFullYear();
-    this.days = getArrayOfDays(getNmbOfDaysInMonth(this.date));
-    this.dayOfWeek = dayToString(Day.date);
+    this.days = getArrayOfDays(getNmbOfDaysInMonth(this.date), this);
+    // this.dayOfWeek = dayToString(Day.date);
 
     //----
     //----
@@ -201,16 +202,23 @@ function Calendar(Day) {
         return dateObj.getFullYear();
     }
 
-    function getArrayOfDays(nbOfDays) {
+    function getArrayOfDays(nbOfDays, Calendar) {
+
         let days = [];
         for (let i = 1; i <= nbOfDays; i++) {
-            days.push(i);
+            let newDate = new Date(`${Calendar.month} ${i}, ${Calendar.year}`)
+            days.push({
+                date: newDate,
+                s: dayToString(newDate)
+            });
         }
         return days;
     }
 
     function getNmbOfDaysInMonth(date) {
         try {
+            // day 0 of Date month + 1 is 
+            // last of Date current month
             return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
         } catch (err) {
             console.trace(err);
@@ -222,7 +230,7 @@ function Calendar(Day) {
 
 function dayToString(dateObj) {
     try {
-        let daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        let daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', ];
         return daysOfWeek[dateObj.getDay()];
     } catch (err) {
         console.trace(err);
@@ -244,7 +252,10 @@ function monthToString(date) {
     }
 }
 
-
+function setDatasetContainerDay(containerNode, dayObj) {
+    containerNode.dataset.id = dayObj.date;
+    containerNode.dataset.day = dayObj.date.getDate();
+}
 
 // ------
 // UTILS 
