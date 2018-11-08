@@ -26,7 +26,9 @@ h1 {
 }
 
 #calendar {
-    width: 100%;
+    max-width: 600px;
+    box-shadow: #4e7594 0px 0px 32px;
+    margin: auto;
 }
 
 #calendar header {
@@ -83,7 +85,6 @@ h1 {
     width: 100px;
     display: inline-block;
     text-align: center;
-    height: 40px;
 }
 
 #calendar .days {
@@ -123,7 +124,8 @@ h1 {
     flex-direction: column;
     text-align: center;
     border-radius: 4px;
-    min-height: 12vw;
+    height: 10vw;
+    max-height: 85px;
     font-size: 20px;
 }
 
