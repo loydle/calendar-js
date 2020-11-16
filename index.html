@@ -3,10 +3,10 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="./style.css">
     <title>A simple HTML5/JS calendar</title>
-    <h1>A simple HTML5 / JS calendar</h1>
-    <div class="wrapper"></div>
+    <h1>A simple <mark>HTML5 / JS</mark> calendar</h1>
+    <div lang="fr-FR" class="wrapper"></div>
+    <div class="buttons-wrapper">
+        <button id="previous">&lt; previous</button><button id="next">&gt; next</button>
+    </div>
     <script src="./main.js"></script>
-    <script>
-        document.querySelector('.wrapper').appendChild(new CalendarJS(new Date()).html);
-    </script>
 </html>

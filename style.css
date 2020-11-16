@@ -71,3 +71,28 @@ h1 {
     background-color: #ffcc33;
     border-radius: 14px;
 }
+.buttons-wrapper button {
+    padding: 12px;
+    border: 1px solid #fff;
+    border-radius: 12px;
+    background: none;
+    color: #fff;
+}
+.buttons-wrapper button:hover,
+.buttons-wrapper button:focus,
+.buttons-wrapper button:active {
+    background: #ffffff40;
+    color: #fff;
+}
+
+.buttons-wrapper{
+    display: flex;
+    justify-content: space-evenly;
+    padding-top: 12px;
+    width: 400px;
+    margin: auto auto;
+}
+
+mark {
+    background-color:  #ffcc33;
+}

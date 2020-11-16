@@ -1,18 +1,12 @@
 'use strict';
 
-/**
-* @param {date} date - a specific date, if not mentionned then its the date of today
-* @return a new CalendarJS as HTMLElement
-*/
 class CalendarJS {
-    constructor(date) {
-        this.date  = date ? date : new Date();
-        this.year  = this.date.getFullYear();
-        this.month = this.date.getMonth();
-        this.html  = this.getHTML();
+    constructor() {
+        const date = new Date();
+        this.month = date.getMonth();
+        this.year = date.getFullYear();
     }
-
-    getDaysOfMonthAsHTML() {
+    getDaysOfMonthAsHTML(year, month){
         let section = document.createElement('section');
         let date = 1;
         /* Loop over weeks */
@@ -21,19 +15,19 @@ class CalendarJS {
             /* Loop over days in week */
             for (let j = 0; j < 7; j++) {
                 /* Day is not part of this week */
-                if (i === 0 && j < (new Date(this.date.getFullYear(), this.date.getMonth())).getDay()) {
+                if (i === 0 && j < (new Date(year, month)).getDay()) {
                     const li = document.createElement('li');
                     ul.appendChild(li);
                 }
                 /* Day is over the week (ex: if day is 32) */
-                else if (date > new Date(this.date.getMonth(), this.date.getFullYear(), 0).getDate()) {
+                else if (date > new Date(month, year, 0).getDate()) {
                     break;
                 }
                 /* Day is part of the week */
                 else {
                     const li = document.createElement('li');
                     /* Day is today, add class .today */
-                    if (date === this.date.getDate() && this.year === this.date.getFullYear() && this.month === this.date.getMonth()) {
+                    if (date === new Date().getDate() && year === new Date().getFullYear() && month === new Date().getMonth()) {
                         li.classList.add("today");
                     }
                     /* date is not today but part of the week */
@@ -46,27 +40,44 @@ class CalendarJS {
         }
         return section;
     }
-    prev () {
-        console.log('ok')
-    }
-    getHTML() {
+
+    showCalendar(month, year) {
+        month = month || new Date().getMonth();
+        year = year || new Date().getFullYear();
+        const date = new Date(`${this.month + 1}/01/${this.year}`);
+        const wrapper = document.querySelector('.wrapper');
+        const previousButton = document.getElementById('previous');
+        const nextButton = document.getElementById('next');
         const article = document.createElement('article');
+        const header = document.createElement('header');
+        const h1 = document.createElement('h1');
+        const ul = document.createElement('ul');
+        const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+        for (let day of days) {
+            const li = document.createElement('li');
+            li.appendChild(document.createTextNode(day));
+            ul.appendChild(li);
+        }
+        h1.appendChild(document.createTextNode(date.toLocaleString('en-EN', { year: 'numeric', month: 'long'})));
+
+        previousButton.onclick = () => {
+            this.year = (this.month === 0) ? this.year - 1 : this.year;
+            this.month = (this.month === 0) ? 11 : this.month - 1;
+            this.showCalendar(this.month, this.year);
+        };
+        nextButton.onclick = () => {
+            this.year = (this.month === 11) ? this.year + 1 : this.year;
+            this.month = (this.month + 1) % 12;
+            this.showCalendar(this.month, this.year);
+        };
         article.id = 'calendar';
-        article.innerHTML += `
-        <h1>${this.date.toLocaleString('en-EN', { year: 'numeric', month: 'long', day: 'numeric' })}</h1>
-        <header>
-            <ul>
-                <li>S</li>
-                <li>M</li>
-                <li>T</li>
-                <li>W</li>
-                <li>T</li>
-                <li>F</li>
-                <li>S</li>
-            </ul>
-        </header>
-        `;
-        article.appendChild(this.getDaysOfMonthAsHTML());
-        return article;
+        header.appendChild(h1);
+        header.appendChild(ul);
+        article.appendChild(header)
+        article.appendChild(this.getDaysOfMonthAsHTML(year, month));
+        wrapper.innerHTML = '';
+        wrapper.appendChild(article);
     }
 }
+
+new CalendarJS().showCalendar();
