@@ -1,7 +1,9 @@
 # Calendar JS - WIP
 A simple HTML5 / JS calendar
 
-[![browser-1.png](https://i.postimg.cc/4NFdxY3n/browser-1.png)](https://postimg.cc/JGZmT4ZW)
+## demo
+https://codepen.io/loydle/pen/zYBbGLx
+
 
 # MIT License
 
