@@ -26,7 +26,6 @@ h1 {
 
 #calendar {
     display: inline-block;
-    border-radius: 4px;
 }
 #calendar header ul,
 #calendar section ul {
@@ -45,6 +44,11 @@ h1 {
     width: 70px;
     height: 70px;
 }
+#calendar section ul li:hover {
+    cursor: pointer;
+    background-color: #ffcc3359;
+    border-radius: 14px;
+}
 
 #calendar header ul {
     background-color: #677077;
@@ -55,6 +59,8 @@ h1 {
 }
 #calendar section {
     background-color: #fff;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
 }
 
 #calendar section ul:last-child {
@@ -63,4 +69,5 @@ h1 {
 
 #calendar section ul li.today {
     background-color: #ffcc33;
+    border-radius: 14px;
 }
