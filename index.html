@@ -1,69 +1,12 @@
 <!doctype html>
 <html lang="en">
-
-<head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="css/main.css">
-    <title>A simple HTML5 / JS calendar
-    </title>
-</head>
-
-<body>
-
-    <h1>A simple <span class="yellow">HTML5 / JS</span> calendar</h1>
-    <div id="calendar">
-        <header>
-            <div><img class="arrow prev" src="./img/arrow.svg"> </div>
-            <div>
-                <div class="month"></div>
-            </div>
-            <div>
-                <img class="arrow next" src="./img/arrow.svg">
-            </div>
-        </header>
-        <section class="day-name ">
-            <ul>
-                <li>S</li>
-                <li>M</li>
-                <li>T</li>
-                <li>W</li>
-                <li>T</li>
-                <li>F</li>
-                <li>S</li>
-            </ul>
-        </section>
-        <section class="month-view">
-            <section class="days">
-                <section class="current-month">
-                    <section class="week week-0"></section>
-                    <section class="week week-1"></section>
-                    <section class="week week-2"></section>
-                    <section class="week week-3"></section>
-                    <section class="week week-4"></section>
-                    <section class="week week-5"></section>
-                    <section class="week week-6"></section>
-                </section>
-            </section>
-        </section>
-    </div>
-
-
-    <template>
-      <div class="day"></div>
-        <div class="day-view"></div>
-        <div class="day-view-option">
-          <ul>
-          </ul>
-        </div>
-        <div class="popup">
-        </div>
-        <canvas  id="task-board"></canvas>
-      </template>
-
-
-
-    <script src="js/main.js"></script>
-
-</body>
-
+    <link rel="stylesheet" href="./style.css">
+    <title>A simple HTML5/JS calendar</title>
+    <h1>A simple HTML5 / JS calendar</h1>
+    <div class="wrapper"></div>
+    <script src="./main.js"></script>
+    <script>
+        document.querySelector('.wrapper').appendChild(new CalendarJS(new Date()).html);
+    </script>
 </html>
